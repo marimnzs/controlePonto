@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/my_nav"
+    app:startDestination="@id/loginActivity">
+
+    <activity
+        android:id="@+id/loginActivity"
+        android:name="com.ponto.controledeponto.LoginActivity"
+        android:label="LoginActivity" />
+    <activity
+        android:id="@+id/home2"
+        android:name="com.ponto.controledeponto.home"
+        android:label="home" />
+    <activity
+        android:id="@+id/checkInActivity"
+        android:name="com.ponto.controledeponto.CheckInActivity"
+        android:label="CheckInActivity" />
+</navigation>
