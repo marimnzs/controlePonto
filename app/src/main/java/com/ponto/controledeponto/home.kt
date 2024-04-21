@@ -3,11 +3,13 @@ package com.ponto.controledeponto
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.google.firebase.firestore.FirebaseFirestore
 import com.ponto.controledeponto.databinding.ActivityHomeBinding
 
 class home : AppCompatActivity() {
 
     private lateinit var binding: ActivityHomeBinding
+    private val db = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,6 +21,10 @@ class home : AppCompatActivity() {
             val navergarEditHours = Intent(this, CheckInActivity::class.java)
 
             startActivity(navergarEditHours)
+        }
+
+        binding.btnCheckIn.setOnClickListener {
+
         }
     }
 }

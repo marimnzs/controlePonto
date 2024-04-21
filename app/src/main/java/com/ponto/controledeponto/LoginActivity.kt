@@ -24,6 +24,16 @@ class LoginActivity : AppCompatActivity() {
 
         FirebaseApp.initializeApp(this)
 
+        val user = FirebaseAuth.getInstance().currentUser
+        
+        if (user != null) {
+            // Se o usuário estiver logado, abrir a tela principal (home)
+            startActivity(Intent(this, home::class.java))
+        } else {
+            // Se o usuário não estiver logado, abrir a tela de login
+            startActivity(Intent(this, LoginActivity::class.java))
+        }
+
         binding.btnLogin.setOnClickListener{
             val email: String = binding.etEmail.text.toString()
             val password: String = binding.etPassword.text.toString()
@@ -61,7 +71,7 @@ class LoginActivity : AppCompatActivity() {
 //                val user = auth.currentUser
             } else {
                 Log.w(TAG, "signInUserWithEmailAndPassword:Failure", task.exception)
-                Toast.makeText(baseContext, "Authentication Failure", Toast.LENGTH_LONG).show()
+                Toast.makeText(baseContext, "Usuário incorreto", Toast.LENGTH_LONG).show()
             }
         }
     }
