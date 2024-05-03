@@ -19,11 +19,41 @@
         android:textColor="@android:color/black"
         android:layout_marginBottom="16dp"/>
 
-    <!-- Spinner para seleção dos dias da semana -->
-    <Spinner
-        android:id="@+id/spinner_days"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+    <CheckBox
+        android:id="@+id/checkbox_segunda"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Segunda-feira"/>
+    <CheckBox
+        android:id="@+id/checkbox_terca"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Terça-feira"/>
+    <CheckBox
+        android:id="@+id/checkbox_quarta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Quarta-feira"/>
+    <CheckBox
+        android:id="@+id/checkbox_quinta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Quinta-feira"/>
+    <CheckBox
+        android:id="@+id/checkbox_sexta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sexta-feira"/>
+    <CheckBox
+        android:id="@+id/checkbox_sabado"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sabado"/>
+    <CheckBox
+        android:id="@+id/checkbox_domingo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Domingo"/>
 
     <!-- Seleção de horário -->
     <TextView
@@ -41,25 +71,25 @@
         android:hint="Hora de início (ex: 8:00)"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/tvFinal"
+            android:id="@+id/tvInitial"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tlEmail"
+        android:id="@+id/tlFinal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Hora de término (ex: 8:00)"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/tvEmail"
+            android:id="@+id/tvFinal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnLogin"
+        android:id="@+id/btnConfirm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"

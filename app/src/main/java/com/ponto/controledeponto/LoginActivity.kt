@@ -25,14 +25,7 @@ class LoginActivity : AppCompatActivity() {
         FirebaseApp.initializeApp(this)
 
         val user = FirebaseAuth.getInstance().currentUser
-        
-        if (user != null) {
-            // Se o usuário estiver logado, abrir a tela principal (home)
-            startActivity(Intent(this, home::class.java))
-        } else {
-            // Se o usuário não estiver logado, abrir a tela de login
-            startActivity(Intent(this, LoginActivity::class.java))
-        }
+
 
         binding.btnLogin.setOnClickListener{
             val email: String = binding.etEmail.text.toString()
@@ -62,7 +55,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun signInWithEmailAndPassword(email: String, password: String) {
-        val navegarHome = Intent(this, home::class.java )
+        val navegarHome = Intent(this, HomeActivity::class.java )
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener{task ->
             if (task.isSuccessful){
                 Log.d(TAG, "signInUserWithEmailAndPassword:Sucess")
