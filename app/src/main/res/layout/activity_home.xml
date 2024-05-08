@@ -56,11 +56,19 @@
             app:cornerRadius="4dp"
             />
     </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ultimos registros"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="16sp" />
     
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp">
 
     </androidx.recyclerview.widget.RecyclerView>
 
