@@ -1,4 +1,5 @@
 **DescriçãoPonto** 
+
 Controle de ponto é um aplicativo desenvolvido em Kotlin para facilitar o registro de horários de trabalho dos funcionários. Com ele, os funcionários podem facilmente marcar os dias e horários em que trabalharam, permitindo um registro de ponto eficiente e preciso com base na geolocalização do usuário..
 
 Além disso, o aplicativo possibilita a geração de relatórios detalhados dos pontos batidos, fornecendo aos funcionários uma visão clara e organizada do tempo trabalhado.
