@@ -86,37 +86,111 @@ class CheckInActivity : AppCompatActivity() {
         startTimeEditText.inputType = InputType.TYPE_CLASS_NUMBER
         endTimeEditText.inputType = InputType.TYPE_CLASS_NUMBER
 
+        // Consulta os dados do Firestore e preenche os campos na tela
+        fetchAndDisplayData()
+
         binding.btnConfirm.setOnClickListener {
             if (auth.uid != null) {
-
                 val startTime = startTimeEditText.text.toString()
                 val endTime = endTimeEditText.text.toString()
 
                 Log.d("Auth", "UID do usuário: ${auth.uid}")
 
-                val diasDeTrabaho = hashMapOf<String, Any>(
+                val diasDeTrabalho = hashMapOf<String, Any>(
                     "diasSelecionados" to selectedDays,
                     "horarioInicial" to startTime,
                     "horarioFinal" to endTime
                 )
 
+                // Verificar se já existe um documento "diasDeTrabalho" para o usuário
                 db.collection("users").document(auth.uid!!)
-                    .collection("diasDeTrabalho")
-                    .add(diasDeTrabaho)
-                    .addOnSuccessListener {
-                        Toast.makeText(baseContext, "Horário adicionado", Toast.LENGTH_LONG).show()
+                    .collection("diasDeTrabalho").document("dados")
+                    .get()
+                    .addOnSuccessListener { document ->
+                        if (document.exists()) {
+                            // Se o documento existir, atualize os dados
+                            db.collection("users").document(auth.uid!!)
+                                .collection("diasDeTrabalho").document("dados")
+                                .update(diasDeTrabalho)
+                                .addOnSuccessListener {
+                                    Toast.makeText(baseContext, "Horário atualizado", Toast.LENGTH_LONG).show()
+                                }
+                                .addOnFailureListener {
+                                    Toast.makeText(
+                                        baseContext,
+                                        "Não foi possível atualizar o horário",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                        } else {
+                            // Se o documento não existir, crie um novo
+                            db.collection("users").document(auth.uid!!)
+                                .collection("diasDeTrabalho").document("dados")
+                                .set(diasDeTrabalho)
+                                .addOnSuccessListener {
+                                    Toast.makeText(baseContext, "Horário adicionado", Toast.LENGTH_LONG).show()
+                                }
+                                .addOnFailureListener {
+                                    Toast.makeText(
+                                        baseContext,
+                                        "Não foi possível adicionar o horário",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                        }
                     }
-                    .addOnFailureListener {
-                        Toast.makeText(
-                            baseContext,
-                            "Nao foi possivel adicionar horário",
-                            Toast.LENGTH_LONG
-                        ).show()
+                    .addOnFailureListener { exception ->
+                        Log.e("Firestore", "Error getting document: ", exception)
+                        Toast.makeText(baseContext, "Erro ao acessar dados", Toast.LENGTH_LONG).show()
                     }
             } else {
                 Log.e("Auth", "UID do usuário é nulo")
                 // Lidar com o caso em que o UID do usuário é nulo
             }
+        }
+    }
+
+    private fun fetchAndDisplayData() {
+        if (auth.uid != null) {
+            // Consulta os dados no Firestore
+            db.collection("users").document(auth.uid!!)
+                .collection("diasDeTrabalho").document("dados")
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document.exists()) {
+                        // Se o documento existir, preencha os campos na tela com os dados recuperados
+                        val data = document.data
+                        if (data != null) {
+                            val selectedDays = data["diasSelecionados"] as List<String>
+                            val startTime = data["horarioInicial"] as String
+                            val endTime = data["horarioFinal"] as String
+
+                            // Preencha os checkboxes com os dias selecionados
+                            selectedDays.forEach { day ->
+                                when (day) {
+                                    "Segunda-feira" -> binding.checkboxSegunda.isChecked = true
+                                    "Terça-feira" -> binding.checkboxTerca.isChecked = true
+                                    "Quarta-feira" -> binding.checkboxQuarta.isChecked = true
+                                    "Quinta-feira" -> binding.checkboxQuinta.isChecked = true
+                                    "Sexta-feira" -> binding.checkboxSexta.isChecked = true
+                                    "Sábado" -> binding.checkboxSabado.isChecked = true
+                                    "Domingo" -> binding.checkboxDomingo.isChecked = true
+                                }
+                            }
+
+                            // Preencha os campos de horário inicial e final
+                            binding.tvInitial.setText(startTime)
+                            binding.tvFinal.setText(endTime)
+                        }
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.e("Firestore", "Error getting document: ", exception)
+                    Toast.makeText(baseContext, "Erro ao acessar dados", Toast.LENGTH_LONG).show()
+                }
+        } else {
+            Log.e("Auth", "UID do usuário é nulo")
+            // Lidar com o caso em que o UID do usuário é nulo
         }
     }
 }

@@ -68,10 +68,32 @@ class HomeActivity : AppCompatActivity() {
     private fun initRecyclerView() {
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.setHasFixedSize(true)
-        binding.recyclerView.adapter = Adapter(getList())
+        getList() // Chama a função para obter os dados do Firestore
     }
 
-    private fun getList() = listOf<String>(
+    private fun displayDataOnRecyclerView(list: MutableList<String>) {
+        binding.recyclerView.adapter = Adapter(list)
+    }
 
-    )
+    private fun getList() {
+        val list = mutableListOf<String>()
+
+        val userCollection = db.collection("users").document(auth.uid!!).collection("horarios")
+
+        userCollection.get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val ponto = document.getString("ponto")
+                    if (ponto != null) {
+                        list.add(ponto)
+                    }
+                }
+
+                displayDataOnRecyclerView(list)
+            }
+            .addOnFailureListener { exception ->
+                Log.w("Firestore", "Error getting documents: ", exception)
+                Toast.makeText(baseContext, "Não foi possível carregar os dados", Toast.LENGTH_LONG).show()
+            }
+    }
 }
