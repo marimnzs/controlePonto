@@ -6,8 +6,10 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ponto.controledeponto.databinding.ActivityHomeBinding
@@ -26,6 +28,8 @@ class HomeActivity : AppCompatActivity() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
+
+        initRecyclerView()
 
         binding.btnEditHours.setOnClickListener {
             val navegarEditHours = Intent(this, CheckInActivity::class.java)
@@ -60,4 +64,14 @@ class HomeActivity : AppCompatActivity() {
         }
 
     }
+
+    private fun initRecyclerView() {
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.setHasFixedSize(true)
+        binding.recyclerView.adapter = Adapter(getList())
+    }
+
+    private fun getList() = listOf<String>(
+
+    )
 }
