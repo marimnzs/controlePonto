@@ -26,6 +26,10 @@ class LoginActivity : AppCompatActivity() {
 
         val user = FirebaseAuth.getInstance().currentUser
 
+        binding.btnSignUp.setOnClickListener {
+            val navegarSignUpActivity = Intent(this, SignUpActivity::class.java )
+            startActivity(navegarSignUpActivity)
+        }
 
         binding.btnLogin.setOnClickListener{
             val email: String = binding.etEmail.text.toString()
@@ -40,18 +44,6 @@ class LoginActivity : AppCompatActivity() {
         }
 
         auth = FirebaseAuth.getInstance()
-    }
-
-    private fun createUserWithEmailAndPassword(email: String, password: String) {
-        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener{ task ->
-            if (task.isSuccessful){
-                Log.d(TAG, "createUserWithEmailAndPassword:Sucess")
-                val user = auth.currentUser
-            } else {
-                Log.w(TAG, "createUserWithEmailAndPassword:Failure", task.exception)
-                Toast.makeText(baseContext, "Authentication Failure", Toast.LENGTH_LONG).show()
-            }
-        }
     }
 
     private fun signInWithEmailAndPassword(email: String, password: String) {
