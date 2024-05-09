@@ -59,7 +59,6 @@ class HomeActivity : AppCompatActivity() {
                     }
             } else {
                 Log.e("Auth", "UID do usuário é nulo")
-                // Lidar com o caso em que o UID do usuário é nulo
             }
         }
 
