@@ -1,6 +1,7 @@
 package com.ponto.controledeponto
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.icu.util.Calendar
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -15,12 +16,19 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.ponto.controledeponto.databinding.ActivityHomeBinding
 import java.text.SimpleDateFormat
 import java.util.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityHomeBinding
     private val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+
+    private companion object {
+        private const val REQUEST_LOCATION_PERMISSION = 1
+    }
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,6 +36,11 @@ class HomeActivity : AppCompatActivity() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
+
+        // Inicializa o Fused Location Provider Client
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+        // Chama a função para obter a localização do usuário
+        getLocation()
 
         initRecyclerView()
 
@@ -94,5 +107,44 @@ class HomeActivity : AppCompatActivity() {
                 Log.w("Firestore", "Error getting documents: ", exception)
                 Toast.makeText(baseContext, "Não foi possível carregar os dados", Toast.LENGTH_LONG).show()
             }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun getLocation() {
+        // Verifica se a permissão de localização está concedida
+        if (checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            // Permissão de localização concedida, solicita a localização do usuário
+            fusedLocationProviderClient.lastLocation
+                .addOnSuccessListener { location ->
+                    // Localização do usuário obtida com sucesso
+                    if (location != null) {
+                        // Use a localização aqui
+                        val latitude = location.latitude
+                        val longitude = location.longitude
+                        Log.d("Location", "Latitude: $latitude, Longitude: $longitude")
+                    } else {
+                        // Localização do usuário não disponível
+                        Log.e("Location", "Localização do usuário não disponível")
+                        Toast.makeText(this, "Localização do usuário não disponível", Toast.LENGTH_SHORT).show()
+                    }
+                }
+        } else {
+            // Permissão de localização não concedida, solicita a permissão
+            requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_LOCATION_PERMISSION)
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_LOCATION_PERMISSION) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permissão de localização concedida, chama a função para obter a localização do usuário
+                getLocation()
+            } else {
+                // Permissão de localização negada, exibe uma mensagem de erro
+                Toast.makeText(this, "Permissão de localização negada", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }
