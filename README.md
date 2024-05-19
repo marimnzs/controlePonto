@@ -1,4 +1,4 @@
-# CameraX Kotlin Implementation
+# Controle de ponto Kotlin Implementation
 
 Controle de ponto é um projeto desenvolvido em Kotlin para facilitar o registro de horários de trabalho dos funcionários. Com ele, os funcionários podem facilmente marcar os dias e horários em que trabalharam, permitindo um registro de ponto eficiente e preciso com base na geolocalização do usuário..
 
