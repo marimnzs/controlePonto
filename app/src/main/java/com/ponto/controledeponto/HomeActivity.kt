@@ -19,21 +19,19 @@ import java.util.*
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.FirebaseApp
+import com.google.firebase.firestore.Query
 
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityHomeBinding
     private val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
-
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-
     private val requestLocationPermissionCode = 1
-
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
 
-    val pontoDeReferencia = LatLng(-22.8340787, -47.0552235) // Exemplo de coordenadas em São Paulo
+    val pontoDeReferencia = LatLng(-22.8340787, -47.0552235) //coordenada na puc
 
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -122,6 +120,8 @@ class HomeActivity : AppCompatActivity() {
                                                 "Não foi possível registrar ponto",
                                                 Toast.LENGTH_LONG
                                             ).show()
+
+                                            getList()
                                         }
                                 } else {
                                     Toast.makeText(
@@ -166,7 +166,9 @@ class HomeActivity : AppCompatActivity() {
 
         val userCollection = db.collection("users").document(auth.uid!!).collection("horarios")
 
-        userCollection.get()
+        userCollection
+            .orderBy("ponto", Query.Direction.DESCENDING) // Ordena por 'ponto' em ordem decrescente
+            .get()
             .addOnSuccessListener { documents ->
                 for (document in documents) {
                     val ponto = document.getString("ponto")
@@ -181,6 +183,7 @@ class HomeActivity : AppCompatActivity() {
                 Toast.makeText(baseContext, "Não foi possível carregar os dados", Toast.LENGTH_LONG).show()
             }
     }
+
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun getLocation() {
