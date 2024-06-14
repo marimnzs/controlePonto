@@ -14,7 +14,7 @@ import com.ponto.controledeponto.databinding.ActivityCheckInBinding
 import java.util.*
 
 class CheckInActivity : AppCompatActivity() {
-
+    //alterar horarios
     private lateinit var binding: ActivityCheckInBinding
     private val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()

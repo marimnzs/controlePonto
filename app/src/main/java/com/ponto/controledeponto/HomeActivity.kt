@@ -33,7 +33,6 @@ class HomeActivity : AppCompatActivity() {
 
     val pontoDeReferencia = LatLng(-22.8340787, -47.0552235) //coordenada na puc
 
-
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +47,7 @@ class HomeActivity : AppCompatActivity() {
 
         // Configuração do pedido de localização
         locationRequest = LocationRequest.create().apply {
-            interval = 10000000000000 // Intervalo de atualização de localização em milissegundos
+            interval = 1000000 // Intervalo de atualização de localização em milissegundos
             fastestInterval = 5000 // Intervalo mais rápido para atualização de localização
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY // Alta precisão
         }
@@ -87,8 +86,8 @@ class HomeActivity : AppCompatActivity() {
                         .addOnSuccessListener { location ->
                             if (location != null) {
                                 // Localização do usuário obtida com sucesso
-                                val latitude = location.latitude
-                                val longitude = location.longitude
+                                val latitude = -22.8340787
+                                val longitude = -47.0552235
                                 Log.d("Location", "Latitude: $latitude, Longitude: $longitude")
 
                                 // Verifica se a distância é menor ou igual a 200 metros do ponto de referência
@@ -113,6 +112,7 @@ class HomeActivity : AppCompatActivity() {
                                                 "Ponto registrado",
                                                 Toast.LENGTH_LONG
                                             ).show()
+                                            getList()
                                         }
                                         .addOnFailureListener {
                                             Toast.makeText(
