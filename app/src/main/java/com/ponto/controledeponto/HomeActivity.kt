@@ -93,35 +93,67 @@ class HomeActivity : AppCompatActivity() {
                                 // Verifica se a distância é menor ou igual a 200 metros do ponto de referência
                                 val distancia = calcularDistancia(latitude, longitude)
                                 if (distancia <= 200) {
-                                    // Registra o ponto
-                                    val currentTime = Calendar.getInstance().time
-                                    val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
-                                    val currentDateTimeString = sdf.format(currentTime)
-
-                                    Log.d("Auth", "UID do usuário: ${auth.uid}")
-
-                                    val horarioMap = hashMapOf(
-                                        "ponto" to currentDateTimeString,
-                                    )
+                                    // Recupera o nome do usuário do Firestore antes de registrar o ponto
                                     db.collection("users").document(auth.uid!!)
-                                        .collection("horarios")
-                                        .add(horarioMap)
-                                        .addOnSuccessListener {
-                                            Toast.makeText(
-                                                baseContext,
-                                                "Ponto registrado",
-                                                Toast.LENGTH_LONG
-                                            ).show()
-                                            getList()
-                                        }
-                                        .addOnFailureListener {
-                                            Toast.makeText(
-                                                baseContext,
-                                                "Não foi possível registrar ponto",
-                                                Toast.LENGTH_LONG
-                                            ).show()
+                                        .get()
+                                        .addOnSuccessListener { documentSnapshot ->
+                                            if (documentSnapshot.exists()) {
+                                                val userName = documentSnapshot.getString("name")
+                                                if (userName != null) {
+                                                    // Registra o ponto
+                                                    val currentTime = Calendar.getInstance().time
+                                                    val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
+                                                    val currentDateTimeString = sdf.format(currentTime)
 
-                                            getList()
+                                                    val horarioMap = hashMapOf(
+                                                        "ponto" to currentDateTimeString,
+                                                        "name" to userName
+                                                    )
+
+                                                    // Adicionando o documento na coleção "horarios" do usuário
+                                                    db.collection("users").document(auth.uid!!)
+                                                        .collection("horarios")
+                                                        .add(horarioMap)
+                                                        .addOnSuccessListener {
+                                                            Toast.makeText(
+                                                                baseContext,
+                                                                "Ponto registrado",
+                                                                Toast.LENGTH_LONG
+                                                            ).show()
+                                                            getList()
+                                                        }
+                                                        .addOnFailureListener { e ->
+                                                            Toast.makeText(
+                                                                baseContext,
+                                                                "Não foi possível registrar ponto: ${e.message}",
+                                                                Toast.LENGTH_LONG
+                                                            ).show()
+                                                            getList()
+                                                        }
+                                                } else {
+                                                    Log.e("Firestore", "Nome do usuário é nulo")
+                                                    Toast.makeText(
+                                                        baseContext,
+                                                        "Nome do usuário não encontrado",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }
+                                            } else {
+                                                Log.e("Firestore", "Documento do usuário não encontrado")
+                                                Toast.makeText(
+                                                    baseContext,
+                                                    "Documento do usuário não encontrado",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Log.e("Firestore", "Erro ao recuperar documento do usuário: ${e.message}")
+                                            Toast.makeText(
+                                                baseContext,
+                                                "Erro ao recuperar documento do usuário: ${e.message}",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
                                         }
                                 } else {
                                     Toast.makeText(
@@ -150,6 +182,7 @@ class HomeActivity : AppCompatActivity() {
             }
         }
     }
+
 
     private fun initRecyclerView() {
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
